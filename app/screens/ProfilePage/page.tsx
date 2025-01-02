@@ -41,10 +41,11 @@ export default function ProfilePage() {
               {user?.name}
             </h2>
             <p className="text-gray-600 mb-4">{user?.email}</p>
-            <Button asChild className="w-full bg-pink-700">
-              <a href="/api/auth/logout">
-                <LogOut className="mr-2 h-4 w-4" /> Log Out
-              </a>
+            <Button
+              className="w-full bg-pink-700"
+              onClick={() => (window.location.href = "/api/auth/logout")}
+            >
+              <LogOut className="mr-2 h-4 w-4" /> Log Out
             </Button>
           </CardContent>
         </Card>

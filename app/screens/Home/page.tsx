@@ -126,15 +126,17 @@ export default function Home() {
             <path d="M12 5v14M5 12h14" />
           </svg>
         </Button>
-        <Button variant="ghost" className="text-purple-600" asChild>
+        <Button variant="ghost" className="text-purple-600">
           <Link href="/screens/ProfilePage">
             <User className="h-6 w-6" />
           </Link>
         </Button>
-        <Button variant="ghost" className="text-purple-600" asChild>
-          <a href="/api/auth/logout">
-            <LogOut className="h-6 w-6" />
-          </a>
+        <Button
+          variant="ghost"
+          className="text-purple-600"
+          onClick={() => (window.location.href = "/api/auth/logout")}
+        >
+          <LogOut className="h-6 w-6" />
         </Button>
       </motion.div>
     </div>
