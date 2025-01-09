@@ -26,12 +26,12 @@ export default function MoodSelectionPage() {
   const router = useRouter();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
 
-  const handleMoodSelect = (mood: string) => {
+  function handleMoodSelect(mood: string) {
     setSelectedMood(mood);
     setTimeout(() => {
       router.push(`/screens/Journal/new/entry?mood=${mood}`);
     }, 500);
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white p-4 sm:p-6 overflow-hidden">

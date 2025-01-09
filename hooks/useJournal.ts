@@ -45,7 +45,10 @@ export function useJournal() {
   };
 
   const getEntryByDate = async (date: string) => {
-    if (!user?.sub) return null;
+    if (!user?.sub) {
+      setLoading(false);
+      return null;
+    }
 
     setLoading(true);
     setError(null);

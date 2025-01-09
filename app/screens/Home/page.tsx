@@ -11,22 +11,22 @@ import {
   LogOut,
   HomeIcon,
   PlusCircle,
-  Calendar,
+  CalendarIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Calendar } from "../../../components/Home/Calendar";
 import { useJournal } from "@/hooks/useJournal";
-import type { JournalEntry } from "@/types/journal";
+import type { JournalEntry as JournalEntryType } from "@/types/journal";
 
 export default function Home() {
   const { user, error, isLoading } = useUser();
   const router = useRouter();
+
   const [mounted, setMounted] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(new Date());
   const { getUserEntries } = useJournal();
-  const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [entries, setEntries] = useState<JournalEntryType[]>([]);
 
   useEffect(() => {
     setMounted(true);
@@ -47,24 +47,13 @@ export default function Home() {
 
   const today = format(new Date(), "EEEE, MMMM d, yyyy");
 
-  const handleDateSelect = (selectedDate: Date | undefined) => {
-    setDate(selectedDate);
-    if (selectedDate) {
-      const formattedDate = format(selectedDate, "yyyy-MM-dd");
-      const existingEntry = entries.find(
-        (entry: JournalEntry) => entry.date === formattedDate
-      );
-
-      if (existingEntry) {
-        router.push(`/screens/Journal/${formattedDate}/view`);
-      }
-    }
-  };
+  function handleDateSelect(date: string) {
+    router.push(`/screens/Journal/${date}`);
+  }
 
   return (
     <div className="min-h-screen bg-[#FFF5F5]">
       <div className="max-w-md mx-auto p-6 space-y-6">
-        {/* Profile Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -86,7 +75,6 @@ export default function Home() {
           </Link>
         </motion.div>
 
-        {/* Chat Button */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -98,7 +86,6 @@ export default function Home() {
           </Button>
         </motion.div>
 
-        {/* Today Section */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -106,43 +93,22 @@ export default function Home() {
           className="p-6 rounded-3xl bg-white/80 shadow-sm"
         >
           <div className="flex items-center gap-3 mb-2">
-            <Calendar className="h-5 w-5 text-[#FF8B8B]" />
+            <CalendarIcon className="h-5 w-5 text-[#FF8B8B]" />
             <h2 className="text-xl font-medium text-[#FF8B8B]">Today</h2>
           </div>
           <p className="text-[#FF8B8B]/70 text-lg">{today}</p>
         </motion.div>
 
-        {/* Calendar */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="p-4 rounded-3xl bg-white/80 shadow-sm"
         >
-          <CalendarComponent
-            mode="single"
-            selected={date}
-            onSelect={handleDateSelect}
-            className="rounded-xl"
-            modifiers={{
-              booked: (date) =>
-                entries.some(
-                  (entry: JournalEntry) =>
-                    entry.date === format(date, "yyyy-MM-dd")
-                ),
-            }}
-            modifiersStyles={{
-              booked: {
-                backgroundColor: "#FFE5E5",
-                color: "#FF8B8B",
-                fontWeight: "500",
-              },
-            }}
-          />
+          <Calendar onSelectDate={handleDateSelect} entries={entries} />
         </motion.div>
       </div>
 
-      {/* Navigation */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
