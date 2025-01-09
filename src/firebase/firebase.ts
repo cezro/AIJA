@@ -14,3 +14,5 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
+
+export default firestore;
