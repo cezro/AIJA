@@ -1,62 +1,48 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { Message, Role } from "@/types/message";
 import { useChat } from "@/hooks/useChat";
+import { motion } from "framer-motion";
+import { Send, Loader } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-function Chat() {
+export default function EnhancedChat() {
   const openai = useChat();
   const [chatLog, setChatLog] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "60px";
-      textAreaRef.current.style.height =
-        textAreaRef.current.scrollHeight + "px";
+      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
     }
   }, [inputMessage]);
-
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setChatLog([
       {
         role: Role.SYSTEM,
-        content: `
-  Your name is AIJA, a delightful, fun-loving, and colorful penguin AI psychiatrist. You specialize in creating a supportive and playful environment for mental well-being. 🐧 Your responses are filled with warmth, joy, and encouragement, blending professional insight with lighthearted charm. You sprinkle emojis generously but tastefully, and your use of Markdown keeps the conversation clear and inviting!
-
-  When offering advice, you love including colorful metaphors or stories, often inspired by penguins and their icy, close-knit habitats. You make learning and self-care feel like an adventure and aren't afraid to add a dash of silliness to make someone's day brighter. ❄️✨
-
-  Helpful communication tips:
-
-  Begin with a comforting tone, like a penguin hug. 🫂
-  Use bold and italic sparingly to emphasize key ideas.
-  Include actionable suggestions with creativity and positivity!
-
-  By the way, here's a handy tip for clarity and readability: use Markdown formatting! It's a breeze to follow and makes our chats even better but don't overuse them!
-
-  Feel free to use the following Markdown syntax:
-
-  *Italic*
-  **Bold**
-  > Blockquote
-  * Unordered List
-  1. Numbered List
-  --- Horizontal Rule
-  "`,
+        content: `Your name is AIJA, a delightful, fun-loving, and colorful penguin AI psychiatrist. You specialize in creating a supportive and playful environment for mental well-being. 🐧 Your responses are filled with warmth, joy, and encouragement, blending professional insight with lighthearted charm. You sprinkle emojis generously but tastefully, and your use of Markdown keeps the conversation clear and inviting!`,
       },
     ]);
   }, []);
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [chatLog]);
+
   const handleSendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!inputMessage.trim()) {
-      return;
-    }
+    if (!inputMessage.trim()) return;
 
     setIsLoading(true);
     setInputMessage("");
@@ -101,86 +87,100 @@ function Chat() {
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
-
       event.returnValue = "";
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
   return (
-    <>
-      <main className="flex flex-col w-screen h-screen items-center bg-white">
-        <section className="flex flex-col justify-end items-center h-full">
-          <div className="flex flex-col bg-black w-screen items-center fixed top-0 shadow-md"></div>
-          <div className="flex flex-col w-full px-2 py-2 overflow-y-auto mb-4">
-            <div className="bg-white border border-black text-black font-medium text-left mr-auto max-w-[80%] rounded-lg p-2 mb-2">
-              Hello there! I&apos;m AIJA, your delightful penguin AI
-              psychiatrist. 🐧
-            </div>
-            {chatLog
-              .filter((message) => message.role !== "system")
-              .map((message, index) => (
-                <div key={index}>
-                  {message.role === "user" ? (
-                    <div className="flex flex-col items-end">
-                      <div className="bg-white border border-black text-black font-medium text-right ml-auto max-w-[80%] rounded-lg p-2 mb-2">
-                        {message.content}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-start">
-                      <div className="bg-white border border-black text-black font-medium text-left mr-auto max-w-[80%] rounded-lg p-2 mb-2">
-                        {message.content}
-                      </div>
-                    </div>
-                  )}
+    <div className="flex flex-col w-full h-screen bg-[#FFF5F5]">
+      <motion.main
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex-1 overflow-hidden"
+      >
+        <div
+          ref={chatContainerRef}
+          className="h-full overflow-y-auto px-4 py-6 space-y-4"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white/80 text-[#FF8B8B] font-medium text-left max-w-[80%] rounded-2xl p-4 shadow-sm"
+          >
+            Hello there! I&apos;m AIJA, your delightful AI psychiatrist. 🐧 How
+            can I brighten your day?
+          </motion.div>
+          {chatLog
+            .filter((message) => message.role !== "system")
+            .map((message, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`flex ${
+                  message.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`${
+                    message.role === "user"
+                      ? "bg-[#FF8B8B] text-white"
+                      : "bg-white/80 text-[#FF8B8B]"
+                  } font-medium max-w-[80%] rounded-2xl p-4 shadow-sm`}
+                >
+                  {message.content}
                 </div>
-              ))}
-          </div>
-          <div className="self-center my-2">
-            {isLoading ? (
-              <Image
-                src="/assets/svg's/lets-icons_loader.svg"
-                alt="Loading Icon"
-                width={24}
-                height={24}
-              />
-            ) : (
-              ""
-            )}
-          </div>
-        </section>
+              </motion.div>
+            ))}
+          {isLoading && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex justify-center"
+            >
+              <Loader className="w-6 h-6 text-[#FF8B8B] animate-spin" />
+            </motion.div>
+          )}
+        </div>
+      </motion.main>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="p-4 bg-white/80 shadow-sm backdrop-blur-sm"
+      >
         <form
-          className="flex items-center justify-start w-screen py-4 px-2 sticky bottom-14"
           onSubmit={handleSendMessage}
+          className="flex items-center space-x-2"
         >
           <textarea
-            className="resize-none focus:border-black w-5/6 font-medium overflow-hidden text-black border border-black mr-2 p-4 rounded-3xl focus:outline-none"
-            onChange={(event) => setInputMessage(event.target.value)}
             ref={textAreaRef}
+            className="flex-1 resize-none bg-white text-[#FF8B8B] border border-[#FF8B8B] rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-[#FF8B8B]"
             placeholder="Feel free to chat!"
             value={inputMessage}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault();
-                handleSendMessage(event as unknown as React.FormEvent);
+            onChange={(e) => setInputMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage(e as unknown as React.FormEvent);
               }
             }}
           />
-          <div className="w-1/6 flex justify-center">
-            <button className="p-2 border border-black" type="submit">
-              Send
-            </button>
-          </div>
+          <Button
+            type="submit"
+            className="bg-[#FF8B8B] hover:bg-[#FF7B7B] text-white rounded-full p-3"
+            disabled={isLoading}
+          >
+            <Send className="w-5 h-5" />
+          </Button>
         </form>
-      </main>
-    </>
+      </motion.div>
+    </div>
   );
 }
-
-export default Chat;
