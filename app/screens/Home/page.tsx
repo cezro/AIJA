@@ -51,6 +51,10 @@ export default function Home() {
     router.push(`/screens/Journal/${date}`);
   }
 
+  function handleNavigateToAIChat() {
+    router.push("/screens/AIChat");
+  }
+
   return (
     <div className="min-h-screen bg-[#FFF5F5]">
       <div className="max-w-md mx-auto p-6 space-y-6">
@@ -82,7 +86,10 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Button className="w-full h-14 text-lg bg-white hover:bg-white/90 text-[#FF8B8B] rounded-2xl shadow-sm">
+          <Button
+            onClick={handleNavigateToAIChat}
+            className="w-full h-14 text-lg bg-white hover:bg-white/90 text-[#FF8B8B] rounded-2xl shadow-sm"
+          >
             <MessageSquare className="mr-2 h-5 w-5" />
             Chat with AIJA
           </Button>
