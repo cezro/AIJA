@@ -4,14 +4,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { Message, Role } from "@/types/message";
 import { useChat } from "@/hooks/useChat";
 import { motion } from "framer-motion";
-import { Send, Loader } from "lucide-react";
+import { Send, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
-export default function EnhancedChat() {
+export default function Chat() {
   const openai = useChat();
   const [chatLog, setChatLog] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -94,8 +96,52 @@ export default function EnhancedChat() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
+  const TypingAnimation = () => (
+    <div className="flex space-x-2 p-3 bg-white/80 rounded-2xl shadow-sm max-w-[80px]">
+      <motion.div
+        className="w-3 h-3 bg-[#FF8B8B] rounded-full"
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+      />
+      <motion.div
+        className="w-3 h-3 bg-[#FF8B8B] rounded-full"
+        animate={{ y: [0, -10, 0] }}
+        transition={{
+          duration: 0.5,
+          repeat: Infinity,
+          repeatType: "reverse",
+          delay: 0.1,
+        }}
+      />
+      <motion.div
+        className="w-3 h-3 bg-[#FF8B8B] rounded-full"
+        animate={{ y: [0, -10, 0] }}
+        transition={{
+          duration: 0.5,
+          repeat: Infinity,
+          repeatType: "reverse",
+          delay: 0.2,
+        }}
+      />
+    </div>
+  );
+
   return (
     <div className="flex flex-col w-full h-screen bg-[#FFF5F5]">
+      <motion.header
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white/80 p-4 shadow-sm"
+      >
+        <Button
+          onClick={() => router.back()}
+          variant="ghost"
+          className="text-[#FF8B8B]"
+        >
+          <ArrowLeft className="w-6 h-6 mr-2" />
+          Back
+        </Button>
+      </motion.header>
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -142,9 +188,9 @@ export default function EnhancedChat() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex justify-center"
+              className="flex justify-start"
             >
-              <Loader className="w-6 h-6 text-[#FF8B8B] animate-spin" />
+              <TypingAnimation />
             </motion.div>
           )}
         </div>
