@@ -68,7 +68,9 @@ export default function Home() {
                 <AvatarFallback>A</AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-2xl font-medium text-[#FF8B8B]">AIJA</h1>
+                <h1 className="text-2xl font-medium text-[#FF8B8B]">
+                  {user?.name}
+                </h1>
                 <p className="text-[#FF8B8B]/70">View Profile</p>
               </div>
             </div>
