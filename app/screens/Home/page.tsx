@@ -16,9 +16,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { Calendar } from "../../../components/Home/Calendar";
+import { CustomCalendar } from "@/components/Home/CustomCalendar";
 import { useJournal } from "@/hooks/useJournal";
-import type { JournalEntry as JournalEntryType } from "@/types/journal";
+import type { JournalEntry } from "@/types/journal";
 
 export default function Home() {
   const { user, error, isLoading } = useUser();
@@ -26,7 +26,7 @@ export default function Home() {
 
   const [mounted, setMounted] = useState(false);
   const { getUserEntries } = useJournal();
-  const [entries, setEntries] = useState<JournalEntryType[]>([]);
+  const [entries, setEntries] = useState<JournalEntry[]>([]);
 
   useEffect(() => {
     setMounted(true);
@@ -105,7 +105,7 @@ export default function Home() {
           transition={{ delay: 0.3 }}
           className="p-4 rounded-3xl bg-white/80 shadow-sm"
         >
-          <Calendar onSelectDate={handleDateSelect} entries={entries} />
+          <CustomCalendar onSelectDate={handleDateSelect} entries={entries} />
         </motion.div>
       </div>
 
