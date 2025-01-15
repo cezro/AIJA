@@ -9,7 +9,7 @@ import {
   MessageSquare,
   User,
   LogOut,
-  HomeIcon,
+  BarChart,
   PlusCircle,
   CalendarIcon,
 } from "lucide-react";
@@ -85,6 +85,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+          className=""
         >
           <Button
             onClick={handleNavigateToAIChat}
@@ -126,12 +127,14 @@ export default function Home() {
       >
         <div className="max-w-md mx-auto px-6">
           <div className="flex justify-between items-center p-4 rounded-full bg-white/80 shadow-sm backdrop-blur-sm">
-            <Button
-              variant="ghost"
-              className="text-[#FF8B8B] rounded-full w-12 h-12"
-            >
-              <HomeIcon className="h-5 w-5" />
-            </Button>
+            <Link href="/screens/MoodChart">
+              <Button
+                variant="ghost"
+                className="text-[#FF8B8B] rounded-full w-12 h-12"
+              >
+                <BarChart className="h-5 w-5" />
+              </Button>
+            </Link>
 
             <Link href="/screens/Journal/new/mood" passHref>
               <Button

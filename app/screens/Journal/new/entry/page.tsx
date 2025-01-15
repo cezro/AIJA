@@ -19,7 +19,6 @@ export default function NewJournalEntry() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFE5E5] via-[#FFF4E5] to-[#FFE5F4] overflow-hidden">
-      {/* Floating shapes */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {[...Array(6)].map((_, i) => (
           <motion.div
@@ -46,7 +45,6 @@ export default function NewJournalEntry() {
         ))}
       </div>
 
-      {/* Main content */}
       <div className="relative z-10 p-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
