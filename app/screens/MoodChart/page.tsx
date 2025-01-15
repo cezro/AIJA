@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { MoodChart } from "@/components/Mood Chart/MoodChart";
 import { useJournal } from "@/hooks/useJournal";
 import type { JournalEntry } from "@/types/journal";
+import { Sparkles } from "lucide-react";
 
 export default function MoodTracker() {
   const router = useRouter();
@@ -33,7 +34,12 @@ export default function MoodTracker() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#FFE5E5] via-[#FFF4E5] to-[#FFE5F4] flex items-center justify-center">
-        <div className="text-[#FF8B8B] text-lg">Loading...</div>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        >
+          <Sparkles className="h-8 w-8 text-[#FF6B6B]" />
+        </motion.div>
       </div>
     );
   }

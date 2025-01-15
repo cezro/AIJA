@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Home from "./screens/Home/page";
+import { Sparkles } from "lucide-react";
 
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
@@ -19,7 +20,17 @@ export default function LandingPage() {
     return null;
   }
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#FFE5E5] via-[#FFF4E5] to-[#FFE5F4] flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        >
+          <Sparkles className="h-8 w-8 text-[#FF6B6B]" />
+        </motion.div>
+      </div>
+    );
   if (error) return <div>{error.message}</div>;
 
   if (user) {
