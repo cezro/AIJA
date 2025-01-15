@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EntryForm } from "../../../../../components/Journal/EntryForm";
+import { Sparkles } from "lucide-react";
 
 function EntryFormWrapper() {
   const searchParams = useSearchParams();
@@ -19,7 +20,6 @@ export default function NewJournalEntry() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFE5E5] via-[#FFF4E5] to-[#FFE5F4] overflow-hidden">
-      {/* Floating shapes */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {[...Array(6)].map((_, i) => (
           <motion.div
@@ -46,7 +46,6 @@ export default function NewJournalEntry() {
         ))}
       </div>
 
-      {/* Main content */}
       <div className="relative z-10 p-6">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -62,7 +61,18 @@ export default function NewJournalEntry() {
             Back
           </Button>
 
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="min-h-screen bg-gradient-to-br from-[#FFE5E5] via-[#FFF4E5] to-[#FFE5F4] flex items-center justify-center">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="h-8 w-8 text-[#FF6B6B]" />
+                </motion.div>
+              </div>
+            }
+          >
             <EntryFormWrapper />
           </Suspense>
         </motion.div>
