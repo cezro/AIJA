@@ -1,18 +1,22 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { Message, Role } from "@/types/message";
+import React, { useState, useEffect, useRef, SyntheticEvent } from "react";
+import * as chatApi from "@/src/firebase/chat";
+import { Message, Role } from "@/types/Chat";
 import { useChat } from "@/hooks/useChat";
 import { motion } from "framer-motion";
 import { Send, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function Chat() {
-  const openai = useChat();
+  const { openai, summarizeConversation } = useChat();
+  const { user } = useUser();
   const [chatLog, setChatLog] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isEndingSession, setIsEndingSession] = useState(false);
   const router = useRouter();
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -95,6 +99,34 @@ export default function Chat() {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
+
+  const endSession = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    setIsEndingSession(true);
+
+    if (!user) {
+      console.error("User not authenticated");
+      setIsEndingSession(false);
+      return;
+    }
+
+    try {
+      const summary = await summarizeConversation(chatLog);
+      const userId = user?.sub;
+      const uploadData = await chatApi.uploadChatSummary(
+        userId as string,
+        summary
+      );
+
+      if (uploadData) {
+        console.log("Chat summary uploaded successfully:", uploadData);
+      }
+    } catch (error) {
+      console.error("Error:", (error as Error).message);
+    } finally {
+      setIsEndingSession(false);
+    }
+  };
 
   const TypingAnimation = () => (
     <div className="flex space-x-2 p-3 bg-white/80 rounded-2xl shadow-sm max-w-[80px]">
@@ -218,6 +250,17 @@ export default function Chat() {
               }
             }}
           />
+          <Button
+            onClick={endSession}
+            className={` ${
+              isEndingSession
+                ? ""
+                : "rounded-lg text-xs py-2 px-4 border border-black file:rounded-lg mb-2 font-medium text-white bg-black"
+            }`}
+            disabled={isEndingSession || isLoading || chatLog.length <= 1}
+          >
+            End Session
+          </Button>
           <Button
             type="submit"
             className="bg-[#FF8B8B] hover:bg-[#FF7B7B] text-white rounded-full p-3"
