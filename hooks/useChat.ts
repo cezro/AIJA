@@ -1,4 +1,4 @@
-import { Message } from "@/types/Chat";
+import { Message } from "@/types/chat";
 import OpenAI from "openai";
 import { useState, useEffect } from "react";
 

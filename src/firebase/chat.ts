@@ -1,6 +1,6 @@
 import { collection, getDoc, addDoc, Timestamp } from "firebase/firestore";
 import { firestore as db } from "./firebase";
-import { ChatSummary } from "@/types/Chat";
+import { ChatSummary } from "@/types/chat";
 
 export async function uploadChatSummary(
   userId: string,

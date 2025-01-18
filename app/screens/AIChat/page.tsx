@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, SyntheticEvent } from "react";
 import * as chatApi from "@/src/firebase/chat";
-import { Message, Role } from "@/types/Chat";
+import { Message, Role } from "@/types/chat";
 import { useChat } from "@/hooks/useChat";
 import { motion } from "framer-motion";
 import { Send, ArrowLeft } from "lucide-react";
