@@ -120,6 +120,7 @@ export default function Chat() {
 
       if (uploadData) {
         console.log("Chat summary uploaded successfully:", uploadData);
+        router.push("/screens/AIChatEnd");
       }
     } catch (error) {
       console.error("Error:", (error as Error).message);
