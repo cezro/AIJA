@@ -42,12 +42,7 @@ export default function LandingPage() {
   }
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex flex-col justify-center items-center p-4 overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center z-10"
-      >
+      <div className="text-center z-10">
         <h1 className="text-4xl md:text-6xl font-bold text-white mt-8">
           Welcome to
         </h1>
@@ -72,7 +67,7 @@ export default function LandingPage() {
             Login
           </Button>
         </div>
-      </motion.div>
+      </div>
 
       <motion.div
         animate={{
