@@ -100,7 +100,7 @@ export default function Chat() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
-  const endSession = async (e: SyntheticEvent) => {
+  async function endSession(e: SyntheticEvent) {
     e.preventDefault();
     setIsEndingSession(true);
 
@@ -127,7 +127,7 @@ export default function Chat() {
     } finally {
       setIsEndingSession(false);
     }
-  };
+  }
 
   const TypingAnimation = () => (
     <div className="flex space-x-2 p-3 bg-white/80 rounded-2xl shadow-sm max-w-[80px]">
