@@ -7,10 +7,10 @@ export async function uploadChatSummary(
   summary: string
 ): Promise<ChatSummary> {
   try {
-    const journalRef = collection(db, "chat_summaries");
+    const chatSummaryRef = collection(db, "chat_summaries");
     const now = Timestamp.now();
 
-    const docRef = await addDoc(journalRef, {
+    const docRef = await addDoc(chatSummaryRef, {
       summary,
       userId,
       createdAt: now,
