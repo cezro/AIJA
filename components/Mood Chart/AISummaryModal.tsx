@@ -3,16 +3,23 @@ import ReactModal from "react-modal";
 import { Button } from "../ui/button";
 import { useEntry } from "@/hooks/useEntry";
 import { useEffect, useState } from "react";
+import * as entryApi from "@/src/firebase/entry";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useRouter } from "next/navigation";
+
 interface AISummaryModalProps {
   isSummaryModalOpen: boolean;
   handleSummaryModal: () => void;
   entry: JournalEntry;
 }
 export default function AISummaryModal(props: AISummaryModalProps) {
+  const { user } = useUser();
   const { isSummaryModalOpen, handleSummaryModal, entry } = props;
   const { summarizeEntry } = useEntry();
   const [summary, setSummary] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  const router = useRouter();
 
   async function generateSummary() {
     setIsLoading(true);
@@ -21,9 +28,19 @@ export default function AISummaryModal(props: AISummaryModalProps) {
     setIsLoading(false);
   }
 
+  function handleNavigationToSuccessPage() {
+    router.push("/screens/AISummaryEnd");
+  }
+
   useEffect(() => {
     generateSummary();
   }, [entry]);
+
+  function handleSave() {
+    const userId = user?.sub;
+    entryApi.uploadEntrySummary(userId as string, summary);
+    handleNavigationToSuccessPage();
+  }
 
   const summaryText = (
     <p className="text-[#FF8B8B]/70 whitespace-pre-wrap">{summary}</p>
@@ -47,15 +64,12 @@ export default function AISummaryModal(props: AISummaryModalProps) {
         {isLoading ? loading : summaryText}
         <div className="mb-4"></div>
         <div>
-          <Button
-            className="mx-2"
-            onClick={async () => {
-              generateSummary();
-            }}
-          >
+          <Button className="mx-2" onClick={generateSummary}>
             Re-Analyze
           </Button>
-          <Button className="mx-2">Save</Button>
+          <Button className="mx-2" onClick={handleSave}>
+            Save
+          </Button>
         </div>
       </div>
     </ReactModal>
