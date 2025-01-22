@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { useJournal } from "@/hooks/useJournal";
 import type { JournalEntry as JournalEntryType } from "@/types/journal";
+import AISummaryModal from "@/components/Mood Chart/AISummaryModal";
 
 export default function JournalEntryPage() {
   const params = useParams();
@@ -16,6 +17,11 @@ export default function JournalEntryPage() {
   const [entry, setEntry] = useState<JournalEntryType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+
+  function handleSummaryModal() {
+    setIsSummaryModalOpen(!isSummaryModalOpen);
+  }
 
   useEffect(() => {
     let isMounted = true;
@@ -29,7 +35,7 @@ export default function JournalEntryPage() {
 
       try {
         const fetchedEntry = await getEntryByDate(params?.date as string);
-        if (isMounted) {
+        if (isMounted && fetchedEntry) {
           setEntry(fetchedEntry);
           setIsLoading(false);
         }
@@ -47,7 +53,7 @@ export default function JournalEntryPage() {
     return () => {
       isMounted = false;
     };
-  }, [params?.date, getEntryByDate]);
+  }, [params?.date]);
 
   const handleDelete = async () => {
     if (!entry) return;
@@ -104,61 +110,76 @@ export default function JournalEntryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF5F5]">
-      <div className="max-w-md mx-auto p-6 space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            className="mb-6 text-[#FF8B8B]"
+    <>
+      <AISummaryModal
+        isSummaryModalOpen={isSummaryModalOpen}
+        handleSummaryModal={handleSummaryModal}
+        entry={entry}
+      />
+      <div className="min-h-screen bg-[#FFF5F5]">
+        <div className="max-w-md mx-auto p-6 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
           >
-            <ArrowLeft className="mr-2 h-5 w-5" /> Back
-          </Button>
+            <Button
+              variant="ghost"
+              onClick={() => router.back()}
+              className="mb-6 text-[#FF8B8B]"
+            >
+              <ArrowLeft className="mr-2 h-5 w-5" /> Back
+            </Button>
 
-          <div className="p-6 rounded-3xl bg-white/80 shadow-sm space-y-6">
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-medium text-[#FF8B8B]">
-                {format(new Date(entry.date), "MMMM d, yyyy")}
-              </h1>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  onClick={handleDelete}
-                  className="text-red-500 hover:bg-red-50"
-                >
-                  <Trash2 className="h-5 w-5" />
-                </Button>
+            <div className="p-6 rounded-3xl bg-white/80 shadow-sm space-y-6">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-medium text-[#FF8B8B]">
+                  {format(new Date(entry.date), "MMMM d, yyyy")}
+                </h1>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    onClick={handleDelete}
+                    className="text-red-500 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </Button>
+                </div>
               </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-medium text-[#FF8B8B]">Mood</h3>
-                <p className="text-[#FF8B8B]/70">{entry.mood}</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-medium text-[#FF8B8B]">Feelings</h3>
-                <p className="text-[#FF8B8B]/70 whitespace-pre-wrap">
-                  {entry.content}
-                </p>
-              </div>
-              {entry.symptoms && (
+              <Button
+                onClick={() => {
+                  handleSummaryModal();
+                }}
+              >
+                Analyze with AI
+              </Button>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-[#FF8B8B]">Mood</h3>
+                  <p className="text-[#FF8B8B]/70">{entry.mood}</p>
+                </div>
                 <div>
                   <h3 className="text-lg font-medium text-[#FF8B8B]">
-                    Symptoms
+                    Feelings
                   </h3>
                   <p className="text-[#FF8B8B]/70 whitespace-pre-wrap">
-                    {entry.symptoms}
+                    {entry.content}
                   </p>
                 </div>
-              )}
+                {entry.symptoms && (
+                  <div>
+                    <h3 className="text-lg font-medium text-[#FF8B8B]">
+                      Symptoms
+                    </h3>
+                    <p className="text-[#FF8B8B]/70 whitespace-pre-wrap">
+                      {entry.symptoms}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
