@@ -107,6 +107,19 @@ export default function ProfilePage() {
             >
               <Button
                 className="w-full h-12 bg-gradient-to-r from-[#FF8B8B] to-[#FFB5B5] hover:from-[#FF7B7B] hover:to-[#FFA5A5] text-white rounded-2xl shadow-sm"
+                onClick={() => (window.location.href = "/screens/Summaries")}
+              >
+                View Summaries
+              </Button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Button
+                className="w-full h-12 bg-gradient-to-r from-[#FF8B8B] to-[#FFB5B5] hover:from-[#FF7B7B] hover:to-[#FFA5A5] text-white rounded-2xl shadow-sm"
                 onClick={() => (window.location.href = "/api/auth/logout")}
               >
                 <LogOut className="mr-2 h-5 w-5" /> Log Out
