@@ -253,10 +253,10 @@ export default function Chat() {
           />
           <Button
             onClick={endSession}
-            className={` ${
-              isEndingSession
-                ? ""
-                : "rounded-lg text-xs py-2 px-4 border border-black file:rounded-lg mb-2 font-medium text-white bg-black"
+            className={`rounded-2xl px-4 py-2 font-medium text-white bg-gradient-to-r from-[#FF8B8B] to-[#FFB5B5] hover:from-[#FF7B7B] hover:to-[#FFA5A5] transition-all ${
+              isEndingSession || isLoading || chatLog.length <= 1
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
             disabled={isEndingSession || isLoading || chatLog.length <= 1}
           >
