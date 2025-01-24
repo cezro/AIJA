@@ -20,3 +20,11 @@ export type Mood = {
   color: string;
   expression: string;
 };
+
+export type EntrySummary = {
+  id: string;
+  userId: string;
+  summary: string;
+  createdAt: string;
+  updatedAt: string;
+};
