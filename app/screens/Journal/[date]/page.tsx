@@ -63,7 +63,7 @@ export default function JournalEntryPage() {
     return () => {
       isMounted = false;
     };
-  }, [params?.date, getEntryByDate]);
+  }, [params?.date]);
 
   const handleDelete = async () => {
     if (!entry) return;
