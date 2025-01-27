@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { JournalEntry } from "@/types/journal";
+import type { JournalEntry } from "@/types/journal";
 import { MOOD_COLORS } from "@/types/mood-chart";
 import { MonthSelector } from "./MonthSelector";
 import { MonthView } from "./MonthView";
@@ -14,7 +14,6 @@ interface MoodChartProps {
 export function MoodChart({ entries }: MoodChartProps) {
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
-  // Calculate total counts for each mood
   const moodCounts = entries.reduce(
     (acc, entry) => {
       acc[entry.mood] = (acc[entry.mood] || 0) + 1;
@@ -64,7 +63,7 @@ export function MoodChart({ entries }: MoodChartProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
           >
             {Object.entries(MOOD_COLORS).map(([mood, color], index) => (
               <motion.div
@@ -72,24 +71,26 @@ export function MoodChart({ entries }: MoodChartProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white/80 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-medium text-[#FF8B8B]">{mood}</h3>
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="text-sm sm:text-lg font-medium text-[#FF8B8B] truncate pr-2">
+                    {mood}
+                  </h3>
                   <motion.div
-                    className="w-2 h-2 rounded-full"
+                    className="w-2 h-2 rounded-full flex-shrink-0"
                     style={{ backgroundColor: color }}
                     animate={{
                       scale: [1, 1.2, 1],
                     }}
                     transition={{
                       duration: 2,
-                      repeat: Infinity,
+                      repeat: Number.POSITIVE_INFINITY,
                       ease: "easeInOut",
                     }}
                   />
                 </div>
-                <div className="relative h-20 bg-[#FFE5E5] rounded-xl overflow-hidden">
+                <div className="relative h-16 sm:h-20 bg-[#FFE5E5] rounded-xl overflow-hidden">
                   <motion.div
                     className="absolute bottom-0 w-full"
                     initial={{ height: 0 }}
@@ -99,26 +100,28 @@ export function MoodChart({ entries }: MoodChartProps) {
                     transition={{
                       duration: 1.5,
                       ease: "easeInOut",
-                      repeat: Infinity,
+                      repeat: Number.POSITIVE_INFINITY,
                       repeatType: "reverse",
                     }}
                     style={{ backgroundColor: color }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <motion.span
-                      className="text-2xl font-bold text-white drop-shadow-lg"
+                    <motion.div
+                      className="flex flex-col items-center"
                       animate={{
                         opacity: [0.8, 1, 0.8],
                         scale: [1, 1.1, 1],
                       }}
                       transition={{
                         duration: 2,
-                        repeat: Infinity,
+                        repeat: Number.POSITIVE_INFINITY,
                         ease: "easeInOut",
                       }}
                     >
-                      {moodCounts[mood] || 0}
-                    </motion.span>
+                      <span className="text-xl sm:text-2xl font-bold text-white drop-shadow-lg">
+                        {moodCounts[mood] || 0}
+                      </span>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
