@@ -17,6 +17,7 @@ import {
   MoreHorizontal,
   X,
   BookOpen,
+  MessageSquare,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -87,6 +88,10 @@ export default function Home() {
     router.push(`/screens/Journal/${date}`);
   }
 
+  function handleNavigateToAIChat() {
+    router.push("/screens/AIChat");
+  }
+
   return (
     <div className="min-h-screen bg-[#FFF5F5]">
       <div className="max-w-md mx-auto p-6 space-y-6">
@@ -111,6 +116,21 @@ export default function Home() {
               </div>
             </div>
           </Link>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className=""
+        >
+          <Button
+            onClick={handleNavigateToAIChat}
+            className="w-full h-14 text-lg bg-white hover:bg-white/90 text-[#FF8B8B] rounded-2xl shadow-sm"
+          >
+            <MessageSquare className="mr-2 h-5 w-5" />
+            Chat with AIJA
+          </Button>
         </motion.div>
 
         <motion.div
@@ -188,7 +208,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                className="absolute bottom-full left-0 right-0 mb-2 p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg"
+                className="absolute bottom-full left-0 right-0 mb-2 p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg mx-12"
               >
                 <div className="grid grid-cols-2 gap-4">
                   <Link href="/screens/MoodChart">
