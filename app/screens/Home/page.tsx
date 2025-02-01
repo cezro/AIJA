@@ -2,16 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  MessageSquare,
   User,
   LogOut,
   BarChart,
   PlusCircle,
   CalendarIcon,
+  Sparkles,
+  GamepadIcon,
+  Loader2,
+  MoreHorizontal,
+  X,
+  BookOpen,
+  MessageSquare,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -27,6 +33,7 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const { getUserEntries } = useJournal();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [showExtraTabs, setShowExtraTabs] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -37,12 +44,42 @@ export default function Home() {
     fetchEntries();
   }, [getUserEntries]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showExtraTabs && !(event.target as Element).closest(".bottom-nav")) {
+        setShowExtraTabs(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showExtraTabs]);
+
   if (!mounted || isLoading) {
-    return null;
+    return (
+      <div className="min-h-screen bg-[#FFF5F5] flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 2,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        >
+          <Loader2 className="h-12 w-12 text-[#FF8B8B]" />
+        </motion.div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div className="min-h-screen bg-[#FFF5F5] flex items-center justify-center">
+        <div className="text-[#FF8B8B] text-lg">Error: {error.message}</div>
+      </div>
+    );
   }
 
   const today = format(new Date(), "EEEE, MMMM d, yyyy");
@@ -125,16 +162,19 @@ export default function Home() {
         transition={{ delay: 0.4 }}
         className="fixed bottom-6 left-0 right-0"
       >
-        <div className="max-w-md mx-auto px-6">
+        <div className="max-w-md mx-auto px-6 bottom-nav">
           <div className="flex justify-between items-center p-4 rounded-full bg-white/80 shadow-sm backdrop-blur-sm">
-            <Link href="/screens/MoodChart">
-              <Button
-                variant="ghost"
-                className="text-[#FF8B8B] rounded-full w-12 h-12"
-              >
-                <BarChart className="h-5 w-5" />
-              </Button>
-            </Link>
+            <Button
+              variant="ghost"
+              className="text-[#FF8B8B] rounded-full w-12 h-12"
+              onClick={() => setShowExtraTabs(!showExtraTabs)}
+            >
+              {showExtraTabs ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <MoreHorizontal className="h-5 w-5" />
+              )}
+            </Button>
 
             <Link href="/screens/Journal/new/mood" passHref>
               <Button
@@ -162,6 +202,55 @@ export default function Home() {
               <LogOut className="h-5 w-5" />
             </Button>
           </div>
+          <AnimatePresence>
+            {showExtraTabs && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="absolute bottom-full left-0 right-0 mb-2 p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg mx-12"
+              >
+                <div className="grid grid-cols-2 gap-4">
+                  <Link href="/screens/MoodChart">
+                    <Button
+                      variant="ghost"
+                      className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
+                    >
+                      <BarChart className="mr-2 h-5 w-5" />
+                      Stats
+                    </Button>
+                  </Link>
+                  <Link href="/screens/Games">
+                    <Button
+                      variant="ghost"
+                      className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
+                    >
+                      <GamepadIcon className="mr-2 h-5 w-5" />
+                      Games
+                    </Button>
+                  </Link>
+                  <Link href="/screens/Summaries">
+                    <Button
+                      variant="ghost"
+                      className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
+                    >
+                      <Sparkles className="mr-2 h-5 w-5" />
+                      Summaries
+                    </Button>
+                  </Link>
+
+                  <Button
+                    variant="ghost"
+                    className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
+                    disabled
+                  >
+                    <BookOpen className="mr-2 h-5 w-5" />
+                    Coming Soon
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
     </div>

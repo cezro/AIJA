@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   format,
@@ -19,7 +19,7 @@ interface CustomCalendarProps {
 }
 
 export function CustomCalendar({ onSelectDate, entries }: CustomCalendarProps) {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = React.useState(new Date());
 
   const onDateClick = (day: Date) => {
     onSelectDate(format(day, "yyyy-MM-dd"));
@@ -50,19 +50,17 @@ export function CustomCalendar({ onSelectDate, entries }: CustomCalendarProps) {
   };
 
   const renderDays = () => {
-    const dateFormat = "EEEEE";
-    const days = [];
-    const startDate = startOfMonth(currentMonth);
+    const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    for (let i = 0; i < 7; i++) {
-      days.push(
-        <div key={i} className="text-center font-bold text-[#FF8B8B]">
-          {format(addMonths(startDate, i), dateFormat)}
-        </div>
-      );
-    }
-
-    return <div className="grid grid-cols-7 gap-1 mb-2">{days}</div>;
+    return (
+      <div className="grid grid-cols-7 gap-1 mb-2">
+        {weekDays.map((day) => (
+          <div key={day} className="text-center font-bold text-[#FF8B8B]">
+            {day[0]}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   const renderCells = () => {
@@ -89,7 +87,7 @@ export function CustomCalendar({ onSelectDate, entries }: CustomCalendarProps) {
           onClick={() => onDateClick(day)}
           className={`p-2 text-center cursor-pointer transition-colors duration-200 ${
             !isSameMonth(day, monthStart)
-              ? "text-gray-400"
+              ? "text-[#FF8B8B]/40"
               : isSameDay(day, new Date())
                 ? "bg-[#FF8B8B] text-white rounded-full"
                 : hasEntry
