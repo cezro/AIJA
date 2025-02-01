@@ -46,7 +46,11 @@ export function EntryForm({ selectedMood }: EntryFormProps) {
       <div className="min-h-screen bg-gradient-to-br from-[#FFE5E5] via-[#FFF4E5] to-[#FFE5F4] flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          transition={{
+            duration: 2,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
         >
           <Sparkles className="h-8 w-8 text-[#FF6B6B]" />
         </motion.div>
@@ -72,23 +76,9 @@ export function EntryForm({ selectedMood }: EntryFormProps) {
         className="p-8 rounded-[2rem] bg-white/40 backdrop-blur-sm border-4 border-[#FFB5B5]/30"
         whileHover={{ scale: 1.01 }}
       >
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF6B6B] to-[#FF8EC3] bg-clip-text text-transparent">
-            New Journal Entry
-          </h1>
-          <motion.div
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button
-              onClick={handleSave}
-              className="bg-gradient-to-r from-[#FF6B6B] to-[#FF8EC3] hover:from-[#FF5B5B] hover:to-[#FF7EB3] text-white rounded-2xl text-lg px-6"
-            >
-              <Save className="mr-2 h-5 w-5" />
-              Save Entry
-            </Button>
-          </motion.div>
-        </div>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF6B6B] to-[#FF8EC3] bg-clip-text text-transparent mb-8">
+          New Journal Entry
+        </h1>
 
         <div className="space-y-8">
           <motion.div whileHover={{ scale: 1.02 }}>
@@ -157,6 +147,23 @@ export function EntryForm({ selectedMood }: EntryFormProps) {
               className="min-h-[100px] bg-white/50 border-[#FFB5B5]/30 text-[#FF6B6B] placeholder:text-[#FFB5B5] rounded-2xl text-lg"
             />
           </motion.div>
+
+          <div className="flex gap-4 pt-4">
+            <Button
+              variant="ghost"
+              onClick={() => router.back()}
+              className="flex-1 text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5] rounded-2xl text-lg py-6"
+            >
+              Back
+            </Button>
+            <Button
+              onClick={handleSave}
+              className="flex-1 bg-gradient-to-r from-[#FF6B6B] to-[#FF8EC3] hover:from-[#FF5B5B] hover:to-[#FF7EB3] text-white rounded-2xl text-lg py-6"
+            >
+              <Save className="mr-2 h-5 w-5" />
+              Save Entry
+            </Button>
+          </div>
         </div>
       </motion.div>
     </motion.div>
