@@ -1,5 +1,3 @@
-"use client";
-
 import ReactModal from "react-modal";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, FileText, MessageSquare } from "lucide-react";

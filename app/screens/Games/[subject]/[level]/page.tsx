@@ -1,97 +1,232 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, CheckCircle, Loader2, Home } from "lucide-react";
 import { useGames } from "@/hooks/useGames";
-import { QuizChoices, QuizQuestion, Subject } from "@/types/games";
+import type { QuizChoices, QuizQuestion, Subject } from "@/types/games";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 export default function Quiz() {
   const params = useParams();
+  const router = useRouter();
 
   const [quiz, setQuiz] = useState<QuizQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [answers, setAnswers] = useState<QuizChoices[]>([]);
+  const [answers, setAnswers] = useState<Record<number, QuizChoices>>({});
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [showResults, setShowResults] = useState(false);
+  const [score, setScore] = useState(0);
 
   const { createQuiz } = useGames();
   const subject = params?.subject as Subject;
-  const level = parseInt(params?.level as string);
+  const level = Number.parseInt(params?.level as string);
 
   useEffect(() => {
     async function generateQuiz() {
-      setQuiz(await createQuiz(subject, level));
+      const questions = await createQuiz(subject, level);
+      setQuiz(questions);
       setIsLoading(false);
     }
     generateQuiz();
-  }, [subject, level]);
-
-  const tallyAnswers = () => {
-    let score = 0;
-    quiz.forEach((question) => {
-      const userAnswer = answers[question.number];
-      if (userAnswer.choice === question.answer) {
-        score += 1;
-      }
-    });
-    return score;
-  };
+  }, [subject, level, createQuiz]);
 
   const handleAnswerSelect = (questionNumber: number, choice: QuizChoices) => {
-    setAnswers((prevAnswers) => {
-      return {
-        ...prevAnswers,
-        [questionNumber]: choice,
-      };
-    });
-    console.log(answers);
+    setAnswers((prev) => ({
+      ...prev,
+      [questionNumber]: choice,
+    }));
   };
 
   const handleSubmit = () => {
-    if (Object.keys(answers).length < quiz.length) {
-      alert("Please answer all questions before submitting.");
-      return;
-    }
-    console.log("Submitted answers:", answers);
-    console.log(tallyAnswers());
+    let totalScore = 0;
+    quiz.forEach((question) => {
+      if (answers[question.number]?.choice === question.answer) {
+        totalScore += 1;
+      }
+    });
+    setScore(totalScore);
+    setShowResults(true);
   };
 
   if (isLoading) {
     return (
-      <p className="justify-center items-center text-bold text-3xl">
-        Loading...
-      </p>
+      <div className="min-h-screen bg-[#FFF5F5] flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 2,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+        >
+          <Loader2 className="h-12 w-12 text-[#FF8B8B]" />
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (showResults) {
+    return (
+      <div className="min-h-screen bg-[#FFF5F5] p-6 flex items-center justify-center">
+        <div className="max-w-md w-full">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg text-center"
+          >
+            <CheckCircle className="h-16 w-16 mx-auto mb-6 text-green-500" />
+            <h2 className="text-2xl font-bold text-[#FF8B8B] mb-4">
+              Quiz Complete!
+            </h2>
+            <p className="text-xl text-[#FF8B8B]/70 mb-6">
+              Your score: {score} out of {quiz.length}
+            </p>
+            <Progress value={(score / quiz.length) * 100} className="mb-6" />
+            <Button
+              onClick={() => router.push("/screens/Games")}
+              className="bg-[#FF8B8B] hover:bg-[#FF7B7B] text-white mb-4"
+            >
+              Try Another Quiz
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => router.push("/screens/Home")}
+              className="w-full text-[#FF8B8B] hover:text-[#FF7B7B]"
+            >
+              <Home className="mr-2 h-5 w-5" />
+              Back to Home
+            </Button>
+          </motion.div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div>
-      {quiz.map((question) => {
-        return (
-          <div key={question.number}>
-            <div className="flex flex-row justify-center items-center border rounded-lg min-w-16">
-              {question.number}. <p className="text-xl">{question.question}</p>
-            </div>
-            <div className="flex flex-row justify-center items-center">
-              {question.choices.map((choice) => {
-                return (
+    <div className="min-h-screen bg-[#FFF5F5] p-6 flex flex-col">
+      <div className="max-w-2xl mx-auto w-full flex-grow flex flex-col">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="text-[#FF8B8B] hover:text-[#FF7B7B] mb-4"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Back
+          </Button>
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-[#FF8B8B]">
+              {subject.charAt(0).toUpperCase() + subject.slice(1)} Quiz
+            </h1>
+            <span className="text-[#FF8B8B]/70">
+              Question {currentQuestion + 1} of {quiz.length}
+            </span>
+          </div>
+          <Progress
+            value={(currentQuestion / quiz.length) * 100}
+            className="mt-4"
+          />
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentQuestion}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg flex-grow"
+          >
+            <div className="space-y-6">
+              <h2 className="text-xl text-[#FF8B8B]">
+                {quiz[currentQuestion].number}. {quiz[currentQuestion].question}
+              </h2>
+              <div className="grid grid-cols-1 gap-3">
+                {quiz[currentQuestion].choices.map((choice) => (
                   <Button
                     key={choice.choice}
-                    value={choice.choice}
-                    className="mx-1"
-                    onClick={() => handleAnswerSelect(question.number, choice)}
-                    disabled={answers[question.number] === choice}
+                    variant={
+                      answers[quiz[currentQuestion].number]?.choice ===
+                      choice.choice
+                        ? "default"
+                        : "outline"
+                    }
+                    className={`w-full justify-start text-left p-4 h-auto ${
+                      answers[quiz[currentQuestion].number]?.choice ===
+                      choice.choice
+                        ? "bg-[#FF8B8B] text-white"
+                        : "hover:bg-[#FFE5E5]"
+                    }`}
+                    onClick={() =>
+                      handleAnswerSelect(quiz[currentQuestion].number, choice)
+                    }
                   >
-                    {choice.choice}. {choice.content}
+                    <span className="font-bold mr-3">{choice.choice}.</span>
+                    {choice.content}
                   </Button>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          </div>
-        );
-      })}
-      <Button onClick={handleSubmit} className="mt-4">
-        Submit Answers
-      </Button>
+          </motion.div>
+        </AnimatePresence>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 flex justify-between"
+        >
+          <Button
+            variant="outline"
+            onClick={() => setCurrentQuestion((prev) => Math.max(0, prev - 1))}
+            disabled={currentQuestion === 0}
+            className="text-[#FF8B8B]"
+          >
+            Previous
+          </Button>
+          {currentQuestion === quiz.length - 1 ? (
+            <Button
+              onClick={handleSubmit}
+              disabled={Object.keys(answers).length < quiz.length}
+              className="bg-[#FF8B8B] hover:bg-[#FF7B7B] text-white"
+            >
+              Submit Quiz
+            </Button>
+          ) : (
+            <Button
+              onClick={() =>
+                setCurrentQuestion((prev) =>
+                  Math.min(quiz.length - 1, prev + 1)
+                )
+              }
+              className="bg-[#FF8B8B] hover:bg-[#FF7B7B] text-white"
+            >
+              Next
+            </Button>
+          )}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-6 text-center"
+        >
+          <Button
+            variant="ghost"
+            onClick={() => router.push("/screens/Home")}
+            className="text-[#FF8B8B] hover:text-[#FF7B7B]"
+          >
+            <Home className="mr-2 h-5 w-5" />
+            Back to Home
+          </Button>
+        </motion.div>
+      </div>
     </div>
   );
 }
