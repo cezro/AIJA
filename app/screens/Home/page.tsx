@@ -238,16 +238,15 @@ export default function Home() {
                       Summaries
                     </Button>
                   </Link>
-                  <Link href="/screens/Journal">
-                    <Button
-                      variant="ghost"
-                      className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
-                      disabled
-                    >
-                      <BookOpen className="mr-2 h-5 w-5" />
-                      Coming Soon
-                    </Button>
-                  </Link>
+
+                  <Button
+                    variant="ghost"
+                    className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
+                    disabled
+                  >
+                    <BookOpen className="mr-2 h-5 w-5" />
+                    Coming Soon
+                  </Button>
                 </div>
               </motion.div>
             )}
