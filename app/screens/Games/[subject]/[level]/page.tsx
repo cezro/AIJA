@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, CheckCircle, Loader2, Home } from "lucide-react";
+import { ArrowLeft, CheckCircle, Home, Sparkles } from "lucide-react";
 import { useGames } from "@/hooks/useGames";
 import type { QuizChoices, QuizQuestion, Subject } from "@/types/games";
 import { Button } from "@/components/ui/button";
@@ -53,16 +53,12 @@ export default function Quiz() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FFF5F5] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#FFE5E5] via-[#FFF4E5] to-[#FFE5F4] flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{
-            duration: 2,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
         >
-          <Loader2 className="h-12 w-12 text-[#FF8B8B]" />
+          <Sparkles className="h-8 w-8 text-[#FF6B6B]" />
         </motion.div>
       </div>
     );
