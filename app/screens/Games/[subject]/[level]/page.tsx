@@ -84,7 +84,10 @@ export default function Quiz() {
             <p className="text-xl text-[#FF8B8B]/70 mb-6">
               Your score: {score} out of {quiz.length}
             </p>
-            <Progress value={(score / quiz.length) * 100} className="mb-6" />
+            <Progress
+              value={(score / quiz.length) * 100}
+              className="mb-6 dark:bg-cyan-400"
+            />
             <Button
               onClick={() => router.push("/screens/Games")}
               className="bg-[#FF8B8B] hover:bg-[#FF7B7B] text-white mb-4"
@@ -131,7 +134,7 @@ export default function Quiz() {
           </div>
           <Progress
             value={(currentQuestion / quiz.length) * 100}
-            className="mt-4"
+            className="mt-4 dark:bg-cyan-400"
           />
         </motion.div>
 
@@ -167,8 +170,10 @@ export default function Quiz() {
                       handleAnswerSelect(quiz[currentQuestion].number, choice)
                     }
                   >
-                    <span className="font-bold mr-3">{choice.choice}.</span>
-                    {choice.content}
+                    <span className="font-bold mr-3 text-[#FF8B8B]">
+                      {choice.choice}.
+                    </span>
+                    <span className="text-[#FF8B8B]">{choice.content}</span>
                   </Button>
                 ))}
               </div>
