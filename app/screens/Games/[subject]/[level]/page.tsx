@@ -31,7 +31,7 @@ export default function Quiz() {
       setIsLoading(false);
     }
     generateQuiz();
-  }, [subject, level, createQuiz]);
+  }, [subject, level]);
 
   const handleAnswerSelect = (questionNumber: number, choice: QuizChoices) => {
     setAnswers((prev) => ({
