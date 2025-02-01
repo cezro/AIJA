@@ -15,6 +15,7 @@ export function useChat() {
   }, []);
 
   const summarizeConversation = async (chatLog: Message[]): Promise<string> => {
+    chatLog.shift();
     const fullText = chatLog.map((msg) => msg.content).join("\n");
     const openai = await getOpenAIInstance();
     const response = await openai.chat.completions.create({
@@ -23,7 +24,7 @@ export function useChat() {
         {
           role: "user",
 
-          content: `You are a helpful mental health assistant who gives specific and helpful suggestions and also writes in paragraph form. Please summarize the following text:\n
+          content: `You are a helpful mental health assistant who gives specific and helpful suggestions and also writes in paragraph form. Make sure not to introduce yourself in the summary. Please summarize the following text:\n
           ${fullText}\n`,
         },
       ],
