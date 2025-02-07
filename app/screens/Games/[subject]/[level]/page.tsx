@@ -79,14 +79,17 @@ export default function Quiz() {
                     const isSelected =
                       answers[question.number]?.choice === choice.choice;
                     const isCorrect = choice.choice === question.answer;
-                    const answerClass = isCorrect
-                      ? "text-green-500"
-                      : isSelected
-                      ? "text-red-500"
-                      : "text-black";
                     return (
                       <div className="flex flex-row mb-1" key={choice.choice}>
-                        <div className={answerClass}>
+                        <div
+                          className={`${
+                            isCorrect
+                              ? "text-green-500"
+                              : isSelected
+                              ? "text-red-500"
+                              : "text-black"
+                          }`}
+                        >
                           {choice.choice}. {choice.content}
                         </div>
                       </div>
