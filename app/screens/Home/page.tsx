@@ -16,7 +16,7 @@ import {
   Loader2,
   MoreHorizontal,
   X,
-  BookOpen,
+  LifeBuoy,
   MessageSquare,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -122,7 +122,6 @@ export default function Home() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className=""
         >
           <Button
             onClick={handleNavigateToAIChat}
@@ -166,7 +165,9 @@ export default function Home() {
           <div className="flex justify-between items-center p-4 rounded-full bg-white/80 shadow-sm backdrop-blur-sm">
             <Button
               variant="ghost"
-              className="text-[#FF8B8B] rounded-full w-12 h-12"
+              className={`rounded-full w-12 h-12 ${
+                showExtraTabs ? "text-[#FF8B8B]" : "text-[#FFB5B5]"
+              }`}
               onClick={() => setShowExtraTabs(!showExtraTabs)}
             >
               {showExtraTabs ? (
@@ -188,7 +189,7 @@ export default function Home() {
             <Link href="/screens/ProfilePage">
               <Button
                 variant="ghost"
-                className="text-[#FF8B8B] rounded-full w-12 h-12"
+                className="text-[#FFB5B5] hover:text-[#FF8B8B] rounded-full w-12 h-12"
               >
                 <User className="h-5 w-5" />
               </Button>
@@ -196,7 +197,7 @@ export default function Home() {
 
             <Button
               variant="ghost"
-              className="text-[#FF8B8B] rounded-full w-12 h-12"
+              className="text-[#FFB5B5] hover:text-[#FF8B8B] rounded-full w-12 h-12"
               onClick={() => (window.location.href = "/api/auth/logout")}
             >
               <LogOut className="h-5 w-5" />
@@ -208,13 +209,13 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                className="absolute bottom-full left-0 right-0 mb-2 p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg mx-12"
+                className="absolute bottom-full left-0 right-0 mb-2 p-4 bg-white/80 backdrop-blur-sm rounded-t-2xl shadow-lg"
               >
                 <div className="grid grid-cols-2 gap-4">
                   <Link href="/screens/MoodChart">
                     <Button
                       variant="ghost"
-                      className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
+                      className="w-full text-[#FFB5B5] hover:text-[#FF8B8B] hover:bg-[#FFE5E5]"
                     >
                       <BarChart className="mr-2 h-5 w-5" />
                       Stats
@@ -223,7 +224,7 @@ export default function Home() {
                   <Link href="/screens/Games">
                     <Button
                       variant="ghost"
-                      className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
+                      className="w-full text-[#FFB5B5] hover:text-[#FF8B8B] hover:bg-[#FFE5E5]"
                     >
                       <GamepadIcon className="mr-2 h-5 w-5" />
                       Games
@@ -232,21 +233,21 @@ export default function Home() {
                   <Link href="/screens/Summaries">
                     <Button
                       variant="ghost"
-                      className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
+                      className="w-full text-[#FFB5B5] hover:text-[#FF8B8B] hover:bg-[#FFE5E5]"
                     >
                       <Sparkles className="mr-2 h-5 w-5" />
                       Summaries
                     </Button>
                   </Link>
-
-                  <Button
-                    variant="ghost"
-                    className="w-full text-[#FF8B8B] hover:text-[#FF7B7B] hover:bg-[#FFE5E5]"
-                    disabled
-                  >
-                    <BookOpen className="mr-2 h-5 w-5" />
-                    Coming Soon
-                  </Button>
+                  <Link href="/screens/Help">
+                    <Button
+                      variant="ghost"
+                      className="w-full text-[#FFB5B5] hover:text-[#FF8B8B] hover:bg-[#FFE5E5]"
+                    >
+                      <LifeBuoy className="mr-2 h-5 w-5" />
+                      Help
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
             )}
