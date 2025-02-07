@@ -68,6 +68,37 @@ export default function Quiz() {
     return (
       <div className="min-h-screen bg-[#FFF5F5] p-6 flex items-center justify-center">
         <div className="max-w-md w-full">
+          <div className="bg-white h-auto px-8">
+            {quiz.map((question) => {
+              return (
+                <div key={question.number} className="flex flex-col mb-4">
+                  <div className="flex flex-row mb-2">
+                    {question.number}. {question.question}
+                  </div>
+                  {question.choices.map((choice) => {
+                    const isSelected =
+                      answers[question.number]?.choice === choice.choice;
+                    const isCorrect = choice.choice === question.answer;
+                    const answerClass = isCorrect
+                      ? "text-green-500"
+                      : isSelected
+                      ? "text-red-500"
+                      : "text-black";
+                    return (
+                      <div className="flex flex-row mb-1" key={choice.choice}>
+                        <div className={answerClass}>
+                          {choice.choice}. {choice.content}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div className="text-lg">
+                    Correct answer: {question.answer}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
